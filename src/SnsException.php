@@ -3,6 +3,6 @@
 
 namespace MiamiOH\SnsHandler;
 
-class SnsException extends \MiamiOH\IamPortal\IamPortalException
+class SnsException extends \Exception
 {
 }
