@@ -102,7 +102,7 @@ class SnsBrokerTest extends TestCase
                 'Type' => SnsMessage::SUBSCRIBE_TYPE,
                 'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
             ]));
-        
+
         Http::fake([
             'https://aws.amazon.com/subscribe/123' => Http::response([], 404, [])
         ]);
