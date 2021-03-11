@@ -4,6 +4,12 @@ namespace MiamiOH\SnsHandler;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class SnsHttpRequest
+ * @package MiamiOH\SnsHandler
+ *
+ * @codeCoverageIgnore
+ */
 class SnsHttpRequest extends FormRequest
 {
     /**

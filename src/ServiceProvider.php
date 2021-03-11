@@ -7,6 +7,12 @@ namespace MiamiOH\SnsHandler;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use MiamiOH\SnsHandler\Controllers\SnsMessageController;
 
+/**
+ * Class ServiceProvider
+ * @package MiamiOH\SnsHandler
+ *
+ * @codeCoverageIgnore
+ */
 class ServiceProvider extends BaseServiceProvider
 {
     private $configPath = __DIR__ . '/../config/sns-handler.php';
