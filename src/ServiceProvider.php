@@ -3,7 +3,6 @@
 
 namespace MiamiOH\SnsHandler;
 
-
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use MiamiOH\SnsHandler\Controllers\SnsMessageController;
 

@@ -7,7 +7,6 @@ use MiamiOH\SnsHandler\SnsMessage;
 use Tests\MiamiOH\SnsHandler\MakesSnsTests;
 use Tests\MiamiOH\SnsHandler\TestCase;
 
-
 class SnsMessageTest extends TestCase
 {
     use MakesSnsTests;

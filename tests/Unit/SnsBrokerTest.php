@@ -15,8 +15,6 @@ use Tests\MiamiOH\SnsHandler\MakesSnsTests;
 use Tests\MiamiOH\SnsHandler\TestCase;
 use Illuminate\Support\Facades\Http;
 
-
-
 class SnsBrokerTest extends TestCase
 {
     use MakesSnsTests;
@@ -89,7 +87,7 @@ class SnsBrokerTest extends TestCase
                 'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
             ]));
 
-        Http::fake(['https://aws.amazon.com/subscribe/123' => Http::response([], 200,[])]);
+        Http::fake(['https://aws.amazon.com/subscribe/123' => Http::response([], 200, [])]);
 
         $this->broker->handleRequest($request);
     }
@@ -140,5 +138,4 @@ class SnsBrokerTest extends TestCase
 
         $this->broker->handleRequest($request);
     }
-
 }

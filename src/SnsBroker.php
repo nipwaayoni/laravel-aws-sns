@@ -8,7 +8,6 @@ use Aws\Sns\MessageValidator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-
 class SnsBroker
 {
     /**
@@ -19,10 +18,6 @@ class SnsBroker
      * @var MessageValidator
      */
     private $validator;
-    /**
-     * @var HttpClient
-     */
-    private $httpClient;
     /**
      * @var Log
      */
@@ -66,6 +61,7 @@ class SnsBroker
 
             case SnsMessage::SUBSCRIBE_TYPE:
                 Log::info(sprintf('Confirming subscription to topic %s', $message->topicArn()));
+                //TODO Make this work with Laravel 6, as the Http facade was introduced in Laravel 7
                 $response = Http::get($message->subscribeUrl());
                 if ($response->successful()) {
                     return;

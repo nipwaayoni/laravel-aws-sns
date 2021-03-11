@@ -39,5 +39,19 @@
                 "MiamiOH\\SnsHandler\\ServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "phpcs-7.3": [
+            "phpcs -p src --standard=PHPCompatibility --runtime-set testVersion 7.3"
+        ],
+        "phpcs-7.4": [
+            "phpcs -p src --standard=PHPCompatibility --runtime-set testVersion 7.4"
+        ],
+        "cs-fix": [
+            "php-cs-fixer fix --diff"
+        ],
+        "phpstan": [
+            "phpstan analyze"
+        ]
     }
 }

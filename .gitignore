@@ -3,3 +3,4 @@
 /tools/
 
 .idea
+.php_cs.cache

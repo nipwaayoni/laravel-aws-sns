@@ -12,7 +12,6 @@ use MiamiOH\SnsHandler\SnsMessage;
 use Tests\MiamiOH\SnsHandler\MakesSnsTests;
 use Tests\MiamiOH\SnsHandler\Unit\SnsMessageHandlerStub;
 
-
 class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
 {
     use MakesSnsTests;
@@ -37,8 +36,6 @@ class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
 
     public function testReturnsNotFoundForUnknownTopicArn(): void
     {
-
-
         $data = $this->makeSnsMessageData([
             'Type' => SnsMessage::NOTIFICATION_TYPE,
             'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:Unknown',
@@ -76,7 +73,6 @@ class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
         ]);
 
         $response = $this->postJson('/sns/message', $data);
-        print_r($response->getContent());
 
         $this->assertEquals(200, $response->status());
     }
