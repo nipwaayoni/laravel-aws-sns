@@ -2,4 +2,6 @@
 use Illuminate\Support\Facades\Route;
 use MiamiOH\SnsHandler\Controllers\SnsMessageController;
 
-Route::post('/sns/message', [SnsMessageController::class, 'handle']);
+Route::group(['prefix' => 'api', 'middleware' => 'api'], function() {
+    Route::post('/sns/message', [SnsMessageController::class, 'handle']);
+});
