@@ -40,7 +40,7 @@ class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
             'Type' => SnsMessage::NOTIFICATION_TYPE,
             'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:Unknown',
         ]);
-        $response = $this->postJson('/sns/message', $data);
+        $response = $this->postJson('/api/sns/message', $data);
 
         $this->assertEquals(404, $response->status());
     }
@@ -55,7 +55,7 @@ class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
             'SubscribeURL' => 'https://aws.amazon.com/sns/register/abc123'
         ]);
 
-        $this->postJson('/sns/message', $data);
+        $this->postJson('/api/sns/message', $data);
 
         Http::assertSent(function (Request $request) {
             return $request->url() === 'https://aws.amazon.com/sns/register/abc123';
@@ -72,7 +72,7 @@ class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
             'SubscribeURL' => 'https://aws.amazon.com/sns/register/abc123'
         ]);
 
-        $response = $this->postJson('/sns/message', $data);
+        $response = $this->postJson('/api/sns/message', $data);
 
         $this->assertEquals(200, $response->status());
     }
@@ -89,7 +89,7 @@ class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
             'SubscribeURL' => 'https://aws.amazon.com/sns/register/abc123'
         ]);
 
-        $response = $this->postJson('/sns/message', $data);
+        $response = $this->postJson('/api/sns/message', $data);
 
         $this->assertEquals(502, $response->status());
     }
@@ -106,7 +106,7 @@ class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
             $this->assertEquals('Test message', $message->message());
         });
 
-        $response = $this->postJson('/sns/message', $data);
+        $response = $this->postJson('/api/sns/message', $data);
 
         $this->assertEquals(200, $response->status());
     }
