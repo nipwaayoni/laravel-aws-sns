@@ -36,7 +36,7 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->mergeConfigFrom($this->configPath, 'sns-handler');
 
-        if (!config('validate-sns-messages')) {
+        if (!config('sns-handler.validate-sns-messages')) {
             $this->app->bind(MessageValidator::class, NullMessageValidator::class);
         }
 
