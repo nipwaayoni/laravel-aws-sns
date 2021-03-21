@@ -3,6 +3,7 @@
 
 namespace MiamiOH\SnsHandler;
 
+use Aws\Sns\MessageValidator;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use MiamiOH\SnsHandler\Controllers\SnsMessageController;
 
@@ -32,7 +33,13 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->app->make(SnsMessageController::class);
+
         $this->mergeConfigFrom($this->configPath, 'sns-handler');
+
+        if (!config('validate-sns-messages')) {
+            $this->app->bind(MessageValidator::class, NullMessageValidator::class);
+        }
+
         $this->app->bind(SnsTopicMapper::class, function () {
             return new SnsTopicMapper(config('sns-handler.sns-class-map', []));
         });
