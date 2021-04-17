@@ -50,7 +50,5 @@ trait ReceivesSnsMessages
         ];
 
         $response = $this->postJson('/api/sns/message', $body, $headers);
-
     }
-
 }
