@@ -1,0 +1,57 @@
+{
+    "name": "miamioh/sns-handler",
+    "description": "Handle SNS subscription requests and messages",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.3",
+      	"ext-json": "*",
+        "aws/aws-php-sns-message-validator": "^1.6"
+
+    },
+    "require-dev" : {
+        "phpunit/phpunit": "^9.5",
+        "roave/security-advisories": "dev-latest",
+        "guzzlehttp/guzzle": "^7.2",
+        "orchestra/testbench": "^6.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\MiamiOH\\SnsHandler\\": "tests/"
+
+        }
+    },
+    "keywords": [
+        "laravel",
+        "sns",
+	"messages"
+    ],
+    "autoload": {
+        "psr-4": {
+            "MiamiOH\\SnsHandler\\" : "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel" : {
+            "providers": [
+                "MiamiOH\\SnsHandler\\ServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "phpcs-7.3": [
+            "phpcs -p src --standard=PHPCompatibility --runtime-set testVersion 7.3"
+        ],
+        "phpcs-7.4": [
+            "phpcs -p src --standard=PHPCompatibility --runtime-set testVersion 7.4"
+        ],
+        "cs-fix": [
+            "php-cs-fixer fix --diff"
+        ],
+        "phpstan": [
+            "phpstan analyze"
+        ]
+    }
+}
