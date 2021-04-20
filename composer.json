@@ -1,5 +1,5 @@
 {
-    "name": "nipwaayoni/sns-handler",
+    "name": "nipwaayoni/laravel-aws-sns",
     "description": "Handle AWS SNS subscription requests and messages",
     "type": "library",
     "license": "GPL-3.0-only",
