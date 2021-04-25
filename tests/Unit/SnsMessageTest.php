@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\MiamiOH\SnsHandler\Unit;
+namespace Nipwaayoni\Tests\SnsHandler\Unit;
 
-use MiamiOH\SnsHandler\SnsException;
-use MiamiOH\SnsHandler\SnsMessage;
-use Tests\MiamiOH\SnsHandler\MakesSnsTests;
-use Tests\MiamiOH\SnsHandler\TestCase;
+use Nipwaayoni\SnsHandler\SnsException;
+use Nipwaayoni\SnsHandler\SnsMessage;
+use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
+use Nipwaayoni\Tests\SnsHandler\TestCase;
 
 class SnsMessageTest extends TestCase
 {

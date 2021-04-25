@@ -1,12 +1,12 @@
 <?php
 
-namespace MiamiOH\SnsHandler;
+namespace Nipwaayoni\SnsHandler;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Class SnsHttpRequest
- * @package MiamiOH\SnsHandler
+ * @package Nipwaayoni\SnsHandler
  *
  * @codeCoverageIgnore
  */

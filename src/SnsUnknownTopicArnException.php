@@ -1,7 +1,7 @@
 <?php
 
 
-namespace MiamiOH\SnsHandler;
+namespace Nipwaayoni\SnsHandler;
 
 use Throwable;
 

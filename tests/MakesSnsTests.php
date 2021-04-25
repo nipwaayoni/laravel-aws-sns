@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Tests\MiamiOH\SnsHandler;
+namespace Nipwaayoni\Tests\SnsHandler;
 
 use Aws\Sns\Message;
-use MiamiOH\SnsHandler\SnsMessage;
+use Nipwaayoni\SnsHandler\SnsMessage;
 
 trait MakesSnsTests
 {

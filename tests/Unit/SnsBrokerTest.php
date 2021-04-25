@@ -1,18 +1,18 @@
 <?php
 
-namespace Tests\MiamiOH\SnsHandler\Unit;
+namespace Nipwaayoni\Tests\SnsHandler\Unit;
 
 use Aws\Sns\MessageValidator;
-use MiamiOH\SnsHandler\SnsBroker;
-use MiamiOH\SnsHandler\SnsConfirmSubscriptionException;
-use MiamiOH\SnsHandler\SnsException;
-use MiamiOH\SnsHandler\SnsHttpRequest;
-use MiamiOH\SnsHandler\SnsMessage;
-use MiamiOH\SnsHandler\SnsTopicMapper;
-use MiamiOH\SnsHandler\SnsUnknownTopicArnException;
+use Nipwaayoni\SnsHandler\SnsBroker;
+use Nipwaayoni\SnsHandler\SnsConfirmSubscriptionException;
+use Nipwaayoni\SnsHandler\SnsException;
+use Nipwaayoni\SnsHandler\SnsHttpRequest;
+use Nipwaayoni\SnsHandler\SnsMessage;
+use Nipwaayoni\SnsHandler\SnsTopicMapper;
+use Nipwaayoni\SnsHandler\SnsUnknownTopicArnException;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\MiamiOH\SnsHandler\MakesSnsTests;
-use Tests\MiamiOH\SnsHandler\TestCase;
+use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
+use Nipwaayoni\Tests\SnsHandler\TestCase;
 use Illuminate\Support\Facades\Http;
 
 class SnsBrokerTest extends TestCase

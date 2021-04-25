@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "MiamiOH\\SnsHandler\\" : "src/"
+            "Nipwaayoni\\SnsHandler\\" : "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\MiamiOH\\SnsHandler\\": "tests/"
+            "Nipwaayoni\\Tests\\SnsHandler\\": "tests/"
         }
     },
     "keywords": [
@@ -43,7 +43,7 @@
     "extra": {
         "laravel" : {
             "providers": [
-                "MiamiOH\\SnsHandler\\ServiceProvider"
+                "Nipwaayoni\\SnsHandler\\ServiceProvider"
             ]
         }
     },

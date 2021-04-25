@@ -1,15 +1,15 @@
 <?php
 
 
-namespace MiamiOH\SnsHandler;
+namespace Nipwaayoni\SnsHandler;
 
 use Aws\Sns\MessageValidator;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use MiamiOH\SnsHandler\Controllers\SnsMessageController;
+use Nipwaayoni\SnsHandler\Controllers\SnsMessageController;
 
 /**
  * Class ServiceProvider
- * @package MiamiOH\SnsHandler
+ * @package Nipwaayoni\SnsHandler
  *
  * @codeCoverageIgnore
  */

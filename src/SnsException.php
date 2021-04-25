@@ -1,11 +1,11 @@
 <?php
 
 
-namespace MiamiOH\SnsHandler;
+namespace Nipwaayoni\SnsHandler;
 
 /**
  * Class SnsException
- * @package MiamiOH\SnsHandler
+ * @package Nipwaayoni\SnsHandler
  *
  * @codeCoverageIgnore
  */

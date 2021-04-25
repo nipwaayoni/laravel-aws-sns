@@ -1,13 +1,13 @@
 <?php
 
 
-namespace MiamiOH\SnsHandler;
+namespace Nipwaayoni\SnsHandler;
 
 use Throwable;
 
 /**
  * Class SnsConfirmSubscriptionException
- * @package MiamiOH\SnsHandler
+ * @package Nipwaayoni\SnsHandler
  *
  * @codeCoverageIgnore
  */
