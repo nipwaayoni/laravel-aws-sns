@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\MiamiOH\SnsHandler\Unit;
+namespace Nipwaayoni\Tests\SnsHandler\Unit;
 
-use MiamiOH\SnsHandler\SnsException;
-use MiamiOH\SnsHandler\SnsTopicMapper;
-use MiamiOH\SnsHandler\SnsUnknownTopicArnException;
-use Tests\MiamiOH\SnsHandler\TestCase;
+use Nipwaayoni\SnsHandler\SnsException;
+use Nipwaayoni\SnsHandler\SnsTopicMapper;
+use Nipwaayoni\SnsHandler\SnsUnknownTopicArnException;
+use Nipwaayoni\Tests\SnsHandler\TestCase;
 
 class SnsTopicMapperTest extends TestCase
 {

@@ -1,13 +1,13 @@
 <?php
 
 
-namespace MiamiOH\SnsHandler;
+namespace Nipwaayoni\SnsHandler;
 
 use Aws\Sns\Message;
 
 /**
  * Class NullMessageValidator
- * @package MiamiOH\SnsHandler
+ * @package Nipwaayoni\SnsHandler
  *
  * @codeCoverageIgnore
  *

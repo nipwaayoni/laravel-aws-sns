@@ -1,7 +1,7 @@
 <?php
 
 
-namespace MiamiOH\SnsHandler;
+namespace Nipwaayoni\SnsHandler;
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;

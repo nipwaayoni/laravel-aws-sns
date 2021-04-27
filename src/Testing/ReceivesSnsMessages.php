@@ -1,14 +1,14 @@
 <?php
 
 
-namespace MiamiOH\SnsHandler\Testing;
+namespace Nipwaayoni\SnsHandler\Testing;
 
 use Illuminate\Testing\TestResponse;
-use MiamiOH\SnsHandler\SnsTopicMapper;
+use Nipwaayoni\SnsHandler\SnsTopicMapper;
 
 /**
  * Trait ReceivesSnsMessages
- * @package MiamiOH\SnsHandler\Testing
+ * @package Nipwaayoni\SnsHandler\Testing
  *
  * @codeCoverageIgnore
  * Just a test helper

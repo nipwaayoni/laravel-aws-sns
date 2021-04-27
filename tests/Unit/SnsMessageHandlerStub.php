@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Tests\MiamiOH\SnsHandler\Unit;
+namespace Nipwaayoni\Tests\SnsHandler\Unit;
 
-use MiamiOH\SnsHandler\SnsMessage;
-use MiamiOH\SnsHandler\SnsMessageHandler;
+use Nipwaayoni\SnsHandler\SnsMessage;
+use Nipwaayoni\SnsHandler\SnsMessageHandler;
 
 class SnsMessageHandlerStub implements SnsMessageHandler
 {

@@ -1,18 +1,18 @@
 <?php
 
 
-namespace Tests\MiamiOH\SnsHandler\Feature;
+namespace Nipwaayoni\Tests\SnsHandler\Feature;
 
 use Aws\Sns\MessageValidator;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
-use MiamiOH\SnsHandler\NullMessageValidator;
-use MiamiOH\SnsHandler\ServiceProvider;
-use MiamiOH\SnsHandler\SnsMessage;
-use Tests\MiamiOH\SnsHandler\MakesSnsTests;
-use Tests\MiamiOH\SnsHandler\Unit\SnsMessageHandlerStub;
+use Nipwaayoni\SnsHandler\NullMessageValidator;
+use Nipwaayoni\SnsHandler\ServiceProvider;
+use Nipwaayoni\SnsHandler\SnsMessage;
+use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
+use Nipwaayoni\Tests\SnsHandler\Unit\SnsMessageHandlerStub;
 
-class SnsHandlerTest extends \Tests\MiamiOH\SnsHandler\TestCase
+class SnsHandlerTest extends \Nipwaayoni\Tests\SnsHandler\TestCase
 {
     use MakesSnsTests;
 

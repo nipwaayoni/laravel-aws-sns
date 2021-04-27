@@ -1,17 +1,17 @@
 <?php
 
-namespace MiamiOH\SnsHandler\Controllers;
+namespace Nipwaayoni\SnsHandler\Controllers;
 
 use Illuminate\Routing\Controller;
-use MiamiOH\SnsHandler\SnsBroker;
-use MiamiOH\SnsHandler\SnsConfirmSubscriptionException;
-use MiamiOH\SnsHandler\SnsException;
-use MiamiOH\SnsHandler\SnsHttpRequest;
-use MiamiOH\SnsHandler\SnsUnknownTopicArnException;
+use Nipwaayoni\SnsHandler\SnsBroker;
+use Nipwaayoni\SnsHandler\SnsConfirmSubscriptionException;
+use Nipwaayoni\SnsHandler\SnsException;
+use Nipwaayoni\SnsHandler\SnsHttpRequest;
+use Nipwaayoni\SnsHandler\SnsUnknownTopicArnException;
 
 /**
  * Class SnsMessageController
- * @package MiamiOH\SnsHandler\Controllers
+ * @package Nipwaayoni\SnsHandler\Controllers
  *
  * @codeCoverageIgnore
  */
