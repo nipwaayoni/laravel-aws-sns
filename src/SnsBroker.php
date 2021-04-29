@@ -7,6 +7,8 @@ use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
+use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
 
 class SnsBroker
 {
@@ -54,6 +56,7 @@ class SnsBroker
 
         switch ($message->type()) {
             case SnsMessage::NOTIFICATION_TYPE:
+                SnsMessageReceived::dispatch($message);
                 $handler = $this->topicMapper->getHandlerForTopic($message->topicArn());
                 Log::debug(sprintf('Handling SNS message from %s with %s', $message->topicArn(), get_class($handler)));
                 $handler->handle($message);
@@ -61,6 +64,7 @@ class SnsBroker
 
             case SnsMessage::SUBSCRIBE_TYPE:
                 Log::info(sprintf('Confirming subscription to topic %s', $message->topicArn()));
+                SnsConfirmationRequestReceived::dispatch($message);
                 //TODO Make this work with Laravel 6, as the Http facade was introduced in Laravel 7
                 $response = Http::get($message->subscribeUrl());
                 if ($response->successful()) {
