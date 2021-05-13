@@ -4,7 +4,6 @@ namespace Nipwaayoni\Tests\SnsHandler\Unit;
 
 use Aws\Sns\MessageValidator;
 use Illuminate\Support\Facades\Event;
-use MiamiOH\IamPortal\Laravel\Events\EntityAccountCreated;
 use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
 use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
 use Nipwaayoni\SnsHandler\SnsBroker;

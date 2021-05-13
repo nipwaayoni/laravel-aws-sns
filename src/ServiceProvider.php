@@ -6,6 +6,7 @@ namespace Nipwaayoni\SnsHandler;
 use Aws\Sns\MessageValidator;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Nipwaayoni\SnsHandler\Controllers\SnsMessageController;
+use Nipwaayoni\SnsHandler\Providers\EventServiceProvider;
 
 /**
  * Class ServiceProvider
@@ -33,6 +34,8 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->app->make(SnsMessageController::class);
+
+        $this->app->register(EventServiceProvider::class);
 
         $this->mergeConfigFrom($this->configPath, 'sns-handler');
 

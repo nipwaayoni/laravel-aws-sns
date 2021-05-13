@@ -65,14 +65,15 @@ class SnsBroker
             case SnsMessage::SUBSCRIBE_TYPE:
                 Log::info(sprintf('Confirming subscription to topic %s', $message->topicArn()));
                 SnsConfirmationRequestReceived::dispatch($message);
+                return;
                 //TODO Make this work with Laravel 6, as the Http facade was introduced in Laravel 7
-                $response = Http::get($message->subscribeUrl());
-                if ($response->successful()) {
-                    return;
-                }
-                $error = sprintf('Subscription confirmation for %s failed with status %s', $message->topicArn(), $response->status());
-                Log::error($error);
-                throw new SnsConfirmSubscriptionException($error);
+//                $response = Http::get($message->subscribeUrl());
+//                if ($response->successful()) {
+//                    return;
+//                }
+//                $error = sprintf('Subscription confirmation for %s failed with status %s', $message->topicArn(), $response->status());
+//                Log::error($error);
+//                throw new SnsConfirmSubscriptionException($error);
         }
 
         throw new SnsException(sprintf('Unknown message type: %s', $message->type()));
