@@ -85,7 +85,7 @@ class SnsBrokerTest extends TestCase
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
 
-    public function testConfirmsSubscriptionUsingSubscribeUrl(): void
+    public function testDispatchesSnsConfirmationRequestEvent(): void
     {
         $request = $this->createMock(SnsHttpRequest::class);
         $request->expects($this->once())->method('jsonContent')
@@ -95,26 +95,6 @@ class SnsBrokerTest extends TestCase
             ]));
 
         Http::fake(['https://aws.amazon.com/subscribe/123' => Http::response([], 200, [])]);
-
-        $this->broker->handleRequest($request);
-        Event::assertDispatched(SnsConfirmationRequestReceived::class);
-    }
-
-    public function testThrowsExceptionIfConfirmSubscriptionFails(): void
-    {
-        $request = $this->createMock(SnsHttpRequest::class);
-        $request->expects($this->once())->method('jsonContent')
-            ->willReturn($this->makeSnsMessageJson([
-                'Type' => SnsMessage::SUBSCRIBE_TYPE,
-                'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
-            ]));
-
-        Http::fake([
-            'https://aws.amazon.com/subscribe/123' => Http::response([], 404, [])
-        ]);
-
-        $this->expectException(SnsConfirmSubscriptionException::class);
-        $this->expectExceptionMessage('Subscription confirmation for arn:aws:sns:us-west-2:123456789012:MyTopic failed with status 404');
 
         $this->broker->handleRequest($request);
         Event::assertDispatched(SnsConfirmationRequestReceived::class);
