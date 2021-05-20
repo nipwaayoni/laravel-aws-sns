@@ -64,11 +64,34 @@ class SnsBroker
 
             case SnsMessage::SUBSCRIBE_TYPE:
                 Log::info(sprintf('Confirming subscription to topic %s', $message->topicArn()));
-                SnsConfirmationRequestReceived::dispatch($message);
+                $className = $this->getSubscriptionEvent($message->topicArn());
+                $className::dispatch($message);
                 return;
 
         }
 
         throw new SnsException(sprintf('Unknown message type: %s', $message->type()));
+    }
+
+    private function getSubscriptionEvent(string $arn)
+    {
+        $map = [SnsConfirmationRequestReceived::class => ['*']];
+        return $this->arnMap($arn, $map);
+    }
+
+    private function arnMap(string $arn, array $map)
+    {
+        $default = null;
+        foreach($map as $className => $arnList) {
+            if ($arnList[0] === '*') {
+                $default = $className;
+            }
+            if (in_array($arn, $arnList)) {
+                return $className;
+            }
+        }
+
+        return $default;
+
     }
 }

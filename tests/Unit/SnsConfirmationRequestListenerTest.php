@@ -67,6 +67,10 @@ class SnsConfirmationRequestListenerTest extends \Nipwaayoni\Tests\SnsHandler\Te
         Log::shouldReceive('info')->once();
 
         $this->listener->handle($event);
+
+        Http::assertSent(function (Request $request) {
+            return $request->url() === 'https://aws.amazon.com/subscribe/123';
+        });
     }
 
 }
