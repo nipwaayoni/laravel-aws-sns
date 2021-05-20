@@ -42,9 +42,5 @@ class ServiceProvider extends BaseServiceProvider
         if (!config('sns-handler.validate-sns-messages')) {
             $this->app->bind(MessageValidator::class, NullMessageValidator::class);
         }
-
-        $this->app->bind(SnsTopicMapper::class, function () {
-            return new SnsTopicMapper(config('sns-handler.sns-class-map', []));
-        });
     }
 }

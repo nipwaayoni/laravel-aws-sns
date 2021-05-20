@@ -4,7 +4,6 @@
 namespace Nipwaayoni\SnsHandler\Testing;
 
 use Illuminate\Testing\TestResponse;
-use Nipwaayoni\SnsHandler\SnsTopicMapper;
 
 /**
  * Trait ReceivesSnsMessages
@@ -15,13 +14,6 @@ use Nipwaayoni\SnsHandler\SnsTopicMapper;
  */
 trait ReceivesSnsMessages
 {
-    public function mapSnsTopicToHandler(array $snsTopicMap): void
-    {
-        //ARN => Class
-        $this->app->bind(SnsTopicMapper::class, function () use ($snsTopicMap) {
-            return new SnsTopicMapper($snsTopicMap);
-        });
-    }
 
     public function sendSnsMessage(string $arn, string $data): TestResponse
     {

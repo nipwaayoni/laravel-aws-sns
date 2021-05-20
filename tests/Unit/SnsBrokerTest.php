@@ -7,16 +7,14 @@ use Illuminate\Support\Facades\Event;
 use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
 use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
 use Nipwaayoni\SnsHandler\SnsBroker;
-use Nipwaayoni\SnsHandler\SnsConfirmSubscriptionException;
 use Nipwaayoni\SnsHandler\SnsException;
 use Nipwaayoni\SnsHandler\SnsHttpRequest;
 use Nipwaayoni\SnsHandler\SnsMessage;
-use Nipwaayoni\SnsHandler\SnsTopicMapper;
 use Nipwaayoni\SnsHandler\SnsUnknownTopicArnException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
 use Nipwaayoni\Tests\SnsHandler\TestCase;
-use Illuminate\Support\Facades\Http;
+
 
 class SnsBrokerTest extends TestCase
 {
@@ -25,8 +23,6 @@ class SnsBrokerTest extends TestCase
     /** @var SnsBroker  */
     private $broker;
 
-    /** @var SnsTopicMapper  */
-    private $topicMapper;
     /** @var MessageValidator|MockObject  */
     private $validator;
 
@@ -37,15 +33,10 @@ class SnsBrokerTest extends TestCase
 
         Event::fake();
 
-        $this->topicMapper = new SnsTopicMapper();
-        $this->topicMapper->map(
-            'arn:aws:sns:us-west-2:123456789012:MyTopic',
-            SnsMessageHandlerStub::class
-        );
 
         $this->validator = $this->createMock(MessageValidator::class);
 
-        $this->broker = new SnsBroker($this->topicMapper, $this->validator);
+        $this->broker = new SnsBroker($this->validator);
     }
 
     public function testMakesSnsMessageFromHttpRequest(): void
@@ -94,23 +85,18 @@ class SnsBrokerTest extends TestCase
                 'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
             ]));
 
-        Http::fake(['https://aws.amazon.com/subscribe/123' => Http::response([], 200, [])]);
-
         $this->broker->handleRequest($request);
         Event::assertDispatched(SnsConfirmationRequestReceived::class);
     }
 
-    public function testCallsHandlerWithNotificationMessage(): void
+    public function testDispatchesDefaultNotificationMessage(): void
     {
+
         $request = $this->createMock(SnsHttpRequest::class);
         $request->expects($this->once())->method('jsonContent')
             ->willReturn($this->makeSnsMessageJson([
                 'MessageId' => 'abc123',
             ]));
-
-        SnsMessageHandlerStub::handleCallback(function (SnsMessage $message) {
-            $this->assertEquals('abc123', $message->id());
-        });
 
         $this->broker->handleRequest($request);
         Event::assertDispatched(SnsMessageReceived::class);

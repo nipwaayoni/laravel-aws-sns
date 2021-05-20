@@ -14,7 +14,7 @@ use Nipwaayoni\SnsHandler\NullMessageValidator;
 use Nipwaayoni\SnsHandler\ServiceProvider;
 use Nipwaayoni\SnsHandler\SnsMessage;
 use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
-use Nipwaayoni\Tests\SnsHandler\Unit\SnsMessageHandlerStub;
+
 
 class SnsHandlerTest extends \Nipwaayoni\Tests\SnsHandler\TestCase
 {
@@ -28,9 +28,9 @@ class SnsHandlerTest extends \Nipwaayoni\Tests\SnsHandler\TestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('sns-handler.sns-class-map', [
-            'arn:aws:sns:us-west-2:123456789012:MyTopic' => SnsMessageHandlerStub::class,
-        ]);
+//        $app['config']->set('sns-handler.sns-class-map', [
+//            'arn:aws:sns:us-west-2:123456789012:MyTopic' => SnsMessageHandlerStub::class,
+//        ]);
     }
 
     protected function getPackageProviders($app)
