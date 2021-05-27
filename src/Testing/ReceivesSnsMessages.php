@@ -15,7 +15,7 @@ use Illuminate\Testing\TestResponse;
 trait ReceivesSnsMessages
 {
 
-    public function sendSnsMessage(string $arn, string $data): TestResponse
+    public function sendSnsMessage(string $data, string $arn = "default"): TestResponse
     {
         $headers = [
             'x-amz-sns-message-type' => 'Notification',
