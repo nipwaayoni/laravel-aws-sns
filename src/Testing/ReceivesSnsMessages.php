@@ -41,6 +41,6 @@ trait ReceivesSnsMessages
                 'UnsubscribeURL' => 'https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:123456789012:MyTopic:c9135db0-26c4-47ec-8998-413945fb5a9',
         ];
 
-        $response = $this->postJson('/api/sns/message', $body, $headers);
+        return $this->postJson('/api/sns/message', $body, $headers);
     }
 }
