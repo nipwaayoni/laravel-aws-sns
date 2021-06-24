@@ -14,7 +14,6 @@ use Illuminate\Testing\TestResponse;
  */
 trait ReceivesSnsMessages
 {
-
     public function sendSnsMessage(string $data, string $arn = "default"): TestResponse
     {
         $headers = [

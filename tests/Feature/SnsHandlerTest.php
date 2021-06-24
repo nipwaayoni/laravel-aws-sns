@@ -15,7 +15,6 @@ use Nipwaayoni\SnsHandler\ServiceProvider;
 use Nipwaayoni\SnsHandler\SnsMessage;
 use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
 
-
 class SnsHandlerTest extends \Nipwaayoni\Tests\SnsHandler\TestCase
 {
     use MakesSnsTests;

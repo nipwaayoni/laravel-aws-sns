@@ -2,10 +2,10 @@
 
 
 namespace Nipwaayoni\SnsHandler\Events;
+
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Nipwaayoni\SnsHandler\SnsMessage;
-
 
 class SnsMessageReceived
 {
@@ -22,6 +22,4 @@ class SnsMessageReceived
     {
         return $this->message;
     }
-
-
 }

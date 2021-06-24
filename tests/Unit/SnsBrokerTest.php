@@ -15,7 +15,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
 use Nipwaayoni\Tests\SnsHandler\TestCase;
 
-
 class SnsBrokerTest extends TestCase
 {
     use MakesSnsTests;
@@ -91,7 +90,6 @@ class SnsBrokerTest extends TestCase
 
     public function testDispatchesDefaultNotificationMessage(): void
     {
-
         $request = $this->createMock(SnsHttpRequest::class);
         $request->expects($this->once())->method('jsonContent')
             ->willReturn($this->makeSnsMessageJson([

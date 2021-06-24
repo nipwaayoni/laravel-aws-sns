@@ -81,7 +81,7 @@ class SnsBroker
     private function arnMap(string $arn, array $map)
     {
         $default = null;
-        foreach($map as $className => $arnList) {
+        foreach ($map as $className => $arnList) {
             if ($arnList[0] === '*') {
                 $default = $className;
             }
@@ -91,8 +91,5 @@ class SnsBroker
         }
 
         return $default;
-
     }
-
-
 }

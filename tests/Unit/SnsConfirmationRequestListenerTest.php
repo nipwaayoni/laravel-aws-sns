@@ -3,7 +3,6 @@
 
 namespace Nipwaayoni\Tests\SnsHandler\Unit;
 
-
 use Aws\Sns\Message;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Event;
@@ -54,7 +53,6 @@ class SnsConfirmationRequestListenerTest extends \Nipwaayoni\Tests\SnsHandler\Te
 
     public function testConfirmsSubscriptionUsingSubscribeUrl(): void
     {
-
         Http::fake(['https://aws.amazon.com/subscribe/123' => Http::response([], 200, [])]);
 
         $message = Message::fromJsonString($this->makeSnsMessageJson([
@@ -72,5 +70,4 @@ class SnsConfirmationRequestListenerTest extends \Nipwaayoni\Tests\SnsHandler\Te
             return $request->url() === 'https://aws.amazon.com/subscribe/123';
         });
     }
-
 }
