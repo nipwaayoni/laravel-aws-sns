@@ -62,8 +62,14 @@ VALIDATE_SNS_MESSAGES=false
 ```
 
 ##How do I send SNS messages to my app?
+The SNS message route responds to POST requests and expects content consistent with an SNS message from AWS.
 
-Instructions pending.
+The message content of an SNS message must be provided as a string value. If your payload is something other than a simple string (e.g. an array or some other sort of object), you will need to serialize your data before sending it using something like json_encode().
+
+###POSTing directly to your app
+[Amazon has an example of a POST request available here.](https://docs.aws.amazon.com/sns/latest/dg/sns-http-https-endpoint-as-subscriber.html)
+You can add your serialized message in the message field. Note that manually POSTed messages cannot be validated (See above to disable message validation). We recommend only attempting this during testing, never in your production environment.
+
 
 ##How to subscribe your endpoint in AWS
 [Follow these instructions to subscribe your endpoint using HTTPS](https://docs.aws.amazon.com/sns/latest/dg/sns-http-https-endpoint-as-subscriber.html)
