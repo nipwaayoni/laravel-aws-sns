@@ -5,7 +5,7 @@ This package provides an easy way of adding AWS SNS message handling to your Lar
 [Instructions for creating an SNS topic in AWS can be found here](https://docs.aws.amazon.com/sns/latest/dg/sns-create-topic.html)
 
 ##How to add SNS Handler to your Application
-**Note: This package currently requires Laravel >= 7.0.**
+**Note: This package currently requires Laravel >= 8.0. Laravel 7 is no longer supported due to security concerns.**
 
 Use composer to require the package:
 
