@@ -4,7 +4,6 @@
 namespace Nipwaayoni\SnsHandler\Testing;
 
 use Illuminate\Testing\TestResponse;
-use Nipwaayoni\SnsHandler\SnsTopicMapper;
 
 /**
  * Trait ReceivesSnsMessages
@@ -15,15 +14,7 @@ use Nipwaayoni\SnsHandler\SnsTopicMapper;
  */
 trait ReceivesSnsMessages
 {
-    public function mapSnsTopicToHandler(array $snsTopicMap): void
-    {
-        //ARN => Class
-        $this->app->bind(SnsTopicMapper::class, function () use ($snsTopicMap) {
-            return new SnsTopicMapper($snsTopicMap);
-        });
-    }
-
-    public function sendSnsMessage(string $arn, string $data): TestResponse
+    public function sendSnsMessage(string $data, string $arn = "default"): TestResponse
     {
         $headers = [
             'x-amz-sns-message-type' => 'Notification',
@@ -49,6 +40,6 @@ trait ReceivesSnsMessages
                 'UnsubscribeURL' => 'https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:123456789012:MyTopic:c9135db0-26c4-47ec-8998-413945fb5a9',
         ];
 
-        $response = $this->postJson('/api/sns/message', $body, $headers);
+        return $this->postJson('/api/sns/message', $body, $headers);
     }
 }

@@ -5,15 +5,12 @@ namespace Nipwaayoni\SnsHandler;
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
+use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
 
 class SnsBroker
 {
-    /**
-     * @var SnsTopicMapper
-     */
-    private $topicMapper;
     /**
      * @var MessageValidator
      */
@@ -23,9 +20,8 @@ class SnsBroker
      */
     private $log;
 
-    public function __construct(SnsTopicMapper $topicMapper, MessageValidator $validator)
+    public function __construct(MessageValidator $validator)
     {
-        $this->topicMapper = $topicMapper;
         $this->validator = $validator;
     }
 
@@ -54,23 +50,46 @@ class SnsBroker
 
         switch ($message->type()) {
             case SnsMessage::NOTIFICATION_TYPE:
-                $handler = $this->topicMapper->getHandlerForTopic($message->topicArn());
-                Log::debug(sprintf('Handling SNS message from %s with %s', $message->topicArn(), get_class($handler)));
-                $handler->handle($message);
+                $className = $this->getNotificationEvent($message->topicArn());
+                $className::dispatch($message);
+                Log::debug(sprintf('Dispatched SNS message from %s with %s', $message->topicArn(), $className));
                 return;
 
             case SnsMessage::SUBSCRIBE_TYPE:
-                Log::info(sprintf('Confirming subscription to topic %s', $message->topicArn()));
-                //TODO Make this work with Laravel 6, as the Http facade was introduced in Laravel 7
-                $response = Http::get($message->subscribeUrl());
-                if ($response->successful()) {
-                    return;
-                }
-                $error = sprintf('Subscription confirmation for %s failed with status %s', $message->topicArn(), $response->status());
-                Log::error($error);
-                throw new SnsConfirmSubscriptionException($error);
+                $className = $this->getSubscriptionEvent($message->topicArn());
+                $className::dispatch($message);
+                Log::info(sprintf('Dispatched confirmation event for subscription to topic %s with %s', $message->topicArn(), $className));
+                return;
+
         }
 
         throw new SnsException(sprintf('Unknown message type: %s', $message->type()));
+    }
+
+    private function getSubscriptionEvent(string $arn)
+    {
+        $map = [SnsConfirmationRequestReceived::class => ['*']];
+        return $this->arnMap($arn, $map);
+    }
+
+    private function getNotificationEvent(string $arn)
+    {
+        $map = [SnsMessageReceived::class => ['*']];
+        return $this->arnMap($arn, $map);
+    }
+
+    private function arnMap(string $arn, array $map)
+    {
+        $default = null;
+        foreach ($map as $className => $arnList) {
+            if ($arnList[0] === '*') {
+                $default = $className;
+            }
+            if (in_array($arn, $arnList)) {
+                return $className;
+            }
+        }
+
+        return $default;
     }
 }

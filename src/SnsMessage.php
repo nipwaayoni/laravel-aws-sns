@@ -58,7 +58,7 @@ class SnsMessage
         return $this->message['SubscribeURL'];
     }
 
-    public function message(): string
+    public function content(): string
     {
         return $this->message['Message'];
     }

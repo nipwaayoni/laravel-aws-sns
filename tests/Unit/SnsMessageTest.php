@@ -57,6 +57,6 @@ class SnsMessageTest extends TestCase
         $json = json_encode(['id' => 123]);
         $message = new SnsMessage($this->makeSnsMessage(['Message' => $json]));
 
-        $this->assertEquals($json, $message->message());
+        $this->assertEquals($json, $message->content());
     }
 }
