@@ -13,10 +13,12 @@ use Nipwaayoni\SnsHandler\Listeners\SnsConfirmationRequestListener;
 use Nipwaayoni\SnsHandler\SnsConfirmSubscriptionException;
 use Nipwaayoni\SnsHandler\SnsMessage;
 use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
+use Nipwaayoni\Tests\SnsHandler\SnsHttpTestHelperTrait;
 
 class SnsConfirmationRequestListenerTest extends \Nipwaayoni\Tests\SnsHandler\TestCase
 {
     use MakesSnsTests;
+    use SnsHttpTestHelperTrait;
 
     /** @var SnsConfirmationRequestListener  */
     private $listener;
@@ -38,7 +40,7 @@ class SnsConfirmationRequestListenerTest extends \Nipwaayoni\Tests\SnsHandler\Te
             'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
         ]));
 
-        Http::fake([
+        $this->httpExpects([
             'https://aws.amazon.com/subscribe/123' => Http::response([], 404, [])
         ]);
 
@@ -53,7 +55,7 @@ class SnsConfirmationRequestListenerTest extends \Nipwaayoni\Tests\SnsHandler\Te
 
     public function testConfirmsSubscriptionUsingSubscribeUrl(): void
     {
-        Http::fake(['https://aws.amazon.com/subscribe/123' => Http::response([], 200, [])]);
+        $this->httpExpects(['https://aws.amazon.com/subscribe/123' => Http::response([], 200, [])]);
 
         $message = Message::fromJsonString($this->makeSnsMessageJson([
             'Type' => SnsMessage::SUBSCRIBE_TYPE,
@@ -66,7 +68,7 @@ class SnsConfirmationRequestListenerTest extends \Nipwaayoni\Tests\SnsHandler\Te
 
         $this->listener->handle($event);
 
-        Http::assertSent(function (Request $request) {
+        $this->httpAssertSent(function (Request $request) {
             return $request->url() === 'https://aws.amazon.com/subscribe/123';
         });
     }
