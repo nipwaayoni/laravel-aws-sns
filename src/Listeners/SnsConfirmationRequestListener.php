@@ -3,39 +3,67 @@
 
 namespace Nipwaayoni\SnsHandler\Listeners;
 
-use Illuminate\Support\Facades\Http;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use Illuminate\Support\Facades\Log;
 use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
 use Nipwaayoni\SnsHandler\SnsConfirmSubscriptionException;
 use Nipwaayoni\SnsHandler\SnsException;
+use Nipwaayoni\SnsHandler\SnsMessage;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class SnsConfirmationRequestListener
 {
+    /**
+     * @var ClientInterface
+     */
+    private $client;
+
+    /**
+     * @var RequestFactoryInterface
+     */
+    private $requestFactory;
+
+    /**
+     * @param ClientInterface|null $client
+     * @param RequestFactoryInterface|null $requestFactory
+     */
+    public function __construct(
+        ClientInterface $client = null,
+        RequestFactoryInterface $requestFactory = null
+    ) {
+        $this->client = $client ?? HttpClientDiscovery::find();
+        $this->requestFactory = $requestFactory ?? Psr17FactoryDiscovery::findRequestFactory();
+    }
+
     public function handle(SnsConfirmationRequestReceived $event)
     {
         $message = $event->message();
-        //TODO Make this work with Laravel 6, as the Http facade was introduced in Laravel 7
+
         $response = $this->getResponse($message);
-        if ($response->successful()) {
-            $info = sprintf('Subscription confirmation for %s succeeded with status %s', $message->topicArn(), $response->status());
-            Log::info($info);
-            return;
-        }
-        $error = sprintf('Subscription confirmation for %s failed with status %s', $message->topicArn(), $response->status());
-        Log::error($error);
-        throw new SnsConfirmSubscriptionException($error);
+
+        Log::info(sprintf('Subscription confirmation for %s succeeded with status %s', $message->topicArn(), $response->getStatusCode()));
     }
 
     /**
-     * @param \Nipwaayoni\SnsHandler\SnsMessage $message
-     * @return \Illuminate\Http\Client\Response
-     * @throws \Nipwaayoni\SnsHandler\SnsException
+     * @param SnsMessage $message
+     * @return ResponseInterface
+     * @throws SnsConfirmSubscriptionException
+     * @throws SnsException
      */
-    private function getResponse(\Nipwaayoni\SnsHandler\SnsMessage $message): \Illuminate\Http\Client\Response
+    private function getResponse(SnsMessage $message): ResponseInterface
     {
-        if (class_exists(Http::class)) {
-            return Http::get($message->subscribeUrl());
+        try {
+            return $this->client->sendRequest(
+                $this->requestFactory->createRequest('GET', $message->subscribeUrl())
+            );
+        } catch (ClientExceptionInterface $e) {
+            throw new SnsConfirmSubscriptionException(
+                sprintf('Subscription confirmation for %s failed with status %s', $message->topicArn(), $e->getCode())
+            );
         }
-        throw new SnsException("Unable to determine HTTP method");
     }
 }

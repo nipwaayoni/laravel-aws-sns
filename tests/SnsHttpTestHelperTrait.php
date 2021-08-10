@@ -3,27 +3,41 @@
 
 namespace Nipwaayoni\Tests\SnsHandler;
 
-use Illuminate\Http\Client\Request;
-use Illuminate\Support\Facades\Http;
-use Nipwaayoni\SnsHandler\SnsException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+use Http\Client\HttpClient;
 
 trait SnsHttpTestHelperTrait
 {
-    public function httpExpects(array $content = null): void
+    /** @var HttpClient  */
+    private $client;
+
+    /** @var HttpTransactionContainer */
+    private $container;
+
+    public function httpExpects(Response ...$responses): void
     {
-        if (class_exists(Http::class)) {
-            Http::fake($content);
-            return;
-        }
-        throw new SnsException("Unable to determine HTTP method");
+        $this->container = new HttpTransactionContainer();
+
+        $history = Middleware::history($this->container);
+
+        $mock = new MockHandler($responses);
+
+        $handlerStack = HandlerStack::create($mock);
+        $handlerStack->push($history);
+
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
+        $this->client = new \Http\Adapter\Guzzle6\Client($client);
     }
 
     public function httpAssertSent(callable $function): void
     {
-        if (class_exists(Http::class)) {
-            Http::assertSent($function);
-            return;
-        }
-        throw new SnsException("Unable to determine HTTP method");
+        $this->assertCount(1, $this->container);
+
+        $request = $this->container[0]->request();
+
+        $function($request);
     }
 }
