@@ -11,6 +11,8 @@ use Nipwaayoni\SnsHandler\SnsException;
 use Nipwaayoni\SnsHandler\SnsHttpRequest;
 use Nipwaayoni\SnsHandler\SnsMessage;
 use Nipwaayoni\SnsHandler\SnsUnknownTopicArnException;
+use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageAlphaReceived;
+use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageBetaReceived;
 use PHPUnit\Framework\MockObject\MockObject;
 use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
 use Nipwaayoni\Tests\SnsHandler\TestCase;
@@ -111,5 +113,34 @@ class SnsBrokerTest extends TestCase
         $this->validator->expects($this->once())->method('validate');
 
         $this->broker->handleRequest($request);
+    }
+
+    public function testDispatchMappedNotificationMessage(): void
+    {
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'MessageId' => 'abc123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->broker->handleRequest($request);
+        Event::assertDispatched(SnsMessageAlphaReceived::class);
+        Event::assertNotDispatched(SnsMessageReceived::class);
+    }
+
+    public function testDispatchFirstMappedNotificationMessage(): void
+    {
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'MessageId' => 'abc123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->broker->handleRequest($request);
+        Event::assertDispatched(SnsMessageAlphaReceived::class);
+        Event::assertNotDispatched(SnsMessageBetaReceived::class);
+        Event::assertNotDispatched(SnsMessageReceived::class);
     }
 }

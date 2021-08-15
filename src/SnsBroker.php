@@ -8,6 +8,8 @@ use Aws\Sns\MessageValidator;
 use Illuminate\Support\Facades\Log;
 use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
 use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
+use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageAlphaReceived;
+use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageBetaReceived;
 
 class SnsBroker
 {
@@ -74,7 +76,11 @@ class SnsBroker
 
     private function getNotificationEvent(string $arn)
     {
-        $map = [SnsMessageReceived::class => ['*']];
+        $map = [
+            SnsMessageAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsMessageBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsMessageReceived::class => ['*'],
+        ];
         return $this->arnMap($arn, $map);
     }
 
