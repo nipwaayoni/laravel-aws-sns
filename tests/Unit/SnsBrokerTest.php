@@ -27,17 +27,15 @@ class SnsBrokerTest extends TestCase
     /** @var MessageValidator|MockObject  */
     private $validator;
 
-
     public function setUp(): void
     {
         parent::setUp();
 
         Event::fake();
 
-
         $this->validator = $this->createMock(MessageValidator::class);
 
-        $this->broker = new SnsBroker($this->validator);
+        $this->broker = new SnsBroker($this->validator, $this->config);
     }
 
     public function testMakesSnsMessageFromHttpRequest(): void
@@ -49,19 +47,6 @@ class SnsBrokerTest extends TestCase
         $message = $this->broker->makeMessageFromHttpRequest($request);
 
         $this->assertEquals(SnsMessage::NOTIFICATION_TYPE, $message->type());
-    }
-
-    public function testRejectsMessageWithUnknownTopicArn(): void
-    {
-        $this->markTestSkipped("Doesn't work with event faking and we think this test will go away after refactoring.");
-        $request = $this->createMock(SnsHttpRequest::class);
-        $request->expects($this->once())->method('jsonContent')
-            ->willReturn($this->makeSnsMessageJson(['TopicArn' => 'arn:aws:sns:us-west-2:123456789012:Unknown']));
-
-        $this->expectException(SnsUnknownTopicArnException::class);
-        $this->expectExceptionMessage('No handler registered for TopicArn arn:aws:sns:us-west-2:123456789012:Unknown');
-
-        $this->broker->handleRequest($request);
     }
 
     public function testThrowsExceptionForUnknownMessageType(): void
@@ -117,6 +102,12 @@ class SnsBrokerTest extends TestCase
 
     public function testDispatchMappedNotificationMessage(): void
     {
+        $this->configValues['message-events'] = [
+            SnsMessageAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsMessageBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsMessageReceived::class => ['*'],
+        ];
+
         $request = $this->createMock(SnsHttpRequest::class);
         $request->expects($this->once())->method('jsonContent')
             ->willReturn($this->makeSnsMessageJson([
@@ -131,6 +122,12 @@ class SnsBrokerTest extends TestCase
 
     public function testDispatchFirstMappedNotificationMessage(): void
     {
+        $this->configValues['message-events'] = [
+            SnsMessageAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsMessageBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsMessageReceived::class => ['*'],
+        ];
+
         $request = $this->createMock(SnsHttpRequest::class);
         $request->expects($this->once())->method('jsonContent')
             ->willReturn($this->makeSnsMessageJson([
@@ -141,6 +138,27 @@ class SnsBrokerTest extends TestCase
         $this->broker->handleRequest($request);
         Event::assertDispatched(SnsMessageAlphaReceived::class);
         Event::assertNotDispatched(SnsMessageBetaReceived::class);
+        Event::assertNotDispatched(SnsMessageReceived::class);
+    }
+
+    public function testRejectsMessageWithUnhandledTopicArn(): void
+    {
+        $this->configValues['message-events'] = [
+            SnsMessageBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:BetaTopic'],
+        ];
+
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'MessageId' => 'abc123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->expectException(SnsUnknownTopicArnException::class);
+        $this->expectExceptionMessage('Unmappable TopicArn: arn:aws:sns:us-west-2:123456789012:AlphaTopic');
+
+        $this->broker->handleRequest($request);
+
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
 }

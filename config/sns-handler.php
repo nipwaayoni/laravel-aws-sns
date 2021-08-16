@@ -2,5 +2,7 @@
 
 return [
     'validate-sns-messages' => env('VALIDATE_SNS_MESSAGES', true),
-    'sns-class-map' => []
+    'message-events' => [
+        Nipwaayoni\SnsHandler\Events\SnsMessageReceived::class => ['*']
+    ],
 ];

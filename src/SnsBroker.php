@@ -5,6 +5,7 @@ namespace Nipwaayoni\SnsHandler;
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Facades\Log;
 use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
 use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
@@ -21,10 +22,15 @@ class SnsBroker
      * @var Log
      */
     private $log;
+    /**
+     * @var Config
+     */
+    private $config;
 
-    public function __construct(MessageValidator $validator)
+    public function __construct(MessageValidator $validator, Config $config)
     {
         $this->validator = $validator;
+        $this->config = $config;
     }
 
     /**
@@ -68,23 +74,35 @@ class SnsBroker
         throw new SnsException(sprintf('Unknown message type: %s', $message->type()));
     }
 
-    private function getSubscriptionEvent(string $arn)
+    /**
+     * @param string $arn
+     * @return string
+     * @throws SnsUnknownTopicArnException
+     */
+    private function getSubscriptionEvent(string $arn): string
     {
         $map = [SnsConfirmationRequestReceived::class => ['*']];
         return $this->arnMap($arn, $map);
     }
 
-    private function getNotificationEvent(string $arn)
+    /**
+     * @param string $arn
+     * @return string
+     * @throws SnsUnknownTopicArnException
+     */
+    private function getNotificationEvent(string $arn): string
     {
-        $map = [
-            SnsMessageAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
-            SnsMessageBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
-            SnsMessageReceived::class => ['*'],
-        ];
+        $map = $this->config->get('sns-handler.message-events', []);
         return $this->arnMap($arn, $map);
     }
 
-    private function arnMap(string $arn, array $map)
+    /**
+     * @param string $arn
+     * @param array $map
+     * @return string
+     * @throws SnsUnknownTopicArnException
+     */
+    private function arnMap(string $arn, array $map): string
     {
         $default = null;
         foreach ($map as $className => $arnList) {
@@ -95,6 +113,12 @@ class SnsBroker
                 return $className;
             }
         }
+
+        if (null === $default) {
+            throw new SnsUnknownTopicArnException(sprintf('Unmappable TopicArn: %s', $arn));
+        }
+
+        // TODO ensure class is dispatchable
 
         return $default;
     }
