@@ -4,6 +4,7 @@
 namespace Nipwaayoni\Tests\SnsHandler;
 
 use Illuminate\Config\Repository;
+use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
 use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -14,6 +15,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected $configValues = [
         'validate-sns-messages' => true,
+        'confirmation-events' => [
+            SnsConfirmationRequestReceived::class => ['*']
+        ],
         'message-events' => [
             SnsMessageReceived::class => ['*']
         ],

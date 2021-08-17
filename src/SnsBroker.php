@@ -81,7 +81,7 @@ class SnsBroker
      */
     private function getSubscriptionEvent(string $arn): string
     {
-        $map = [SnsConfirmationRequestReceived::class => ['*']];
+        $map = $this->config->get('sns-handler.confirmation-events', []);
         return $this->arnMap($arn, $map);
     }
 

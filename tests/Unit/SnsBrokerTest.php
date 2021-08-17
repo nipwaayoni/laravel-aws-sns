@@ -11,6 +11,8 @@ use Nipwaayoni\SnsHandler\SnsException;
 use Nipwaayoni\SnsHandler\SnsHttpRequest;
 use Nipwaayoni\SnsHandler\SnsMessage;
 use Nipwaayoni\SnsHandler\SnsUnknownTopicArnException;
+use Nipwaayoni\Tests\SnsHandler\Events\SnsConfirmationRequestAlphaReceived;
+use Nipwaayoni\Tests\SnsHandler\Events\SnsConfirmationRequestBetaReceived;
 use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageAlphaReceived;
 use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageBetaReceived;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -62,31 +64,6 @@ class SnsBrokerTest extends TestCase
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
 
-    public function testDispatchesSnsConfirmationRequestEvent(): void
-    {
-        $request = $this->createMock(SnsHttpRequest::class);
-        $request->expects($this->once())->method('jsonContent')
-            ->willReturn($this->makeSnsMessageJson([
-                'Type' => SnsMessage::SUBSCRIBE_TYPE,
-                'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
-            ]));
-
-        $this->broker->handleRequest($request);
-        Event::assertDispatched(SnsConfirmationRequestReceived::class);
-    }
-
-    public function testDispatchesDefaultNotificationMessage(): void
-    {
-        $request = $this->createMock(SnsHttpRequest::class);
-        $request->expects($this->once())->method('jsonContent')
-            ->willReturn($this->makeSnsMessageJson([
-                'MessageId' => 'abc123',
-            ]));
-
-        $this->broker->handleRequest($request);
-        Event::assertDispatched(SnsMessageReceived::class);
-    }
-
     public function testValidatesSnsMessage(): void
     {
         $request = $this->createMock(SnsHttpRequest::class);
@@ -100,7 +77,97 @@ class SnsBrokerTest extends TestCase
         $this->broker->handleRequest($request);
     }
 
-    public function testDispatchMappedNotificationMessage(): void
+    public function testDispatchesDefaultConfirmationRequestEvent(): void
+    {
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'Type' => SnsMessage::SUBSCRIBE_TYPE,
+                'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
+            ]));
+
+        $this->broker->handleRequest($request);
+        Event::assertDispatched(SnsConfirmationRequestReceived::class);
+    }
+
+    public function testDispatchesMappedConfirmationRequestEvent(): void
+    {
+        $this->configValues['confirmation-events'] = [
+            SnsConfirmationRequestAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsConfirmationRequestBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsConfirmationRequestReceived::class => ['*'],
+        ];
+
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'Type' => SnsMessage::SUBSCRIBE_TYPE,
+                'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->broker->handleRequest($request);
+        Event::assertDispatched(SnsConfirmationRequestAlphaReceived::class);
+        Event::assertNotDispatched(SnsConfirmationRequestReceived::class);
+    }
+
+    public function testDispatchFirstMappedConfirmationEvent(): void
+    {
+        $this->configValues['confirmation-events'] = [
+            SnsConfirmationRequestAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsConfirmationRequestBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+            SnsConfirmationRequestReceived::class => ['*'],
+        ];
+
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'Type' => SnsMessage::SUBSCRIBE_TYPE,
+                'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->broker->handleRequest($request);
+        Event::assertDispatched(SnsConfirmationRequestAlphaReceived::class);
+        Event::assertNotDispatched(SnsConfirmationRequestBetaReceived::class);
+        Event::assertNotDispatched(SnsConfirmationRequestReceived::class);
+    }
+
+    public function testRejectsWithUnhandledTopicArnOnConfirmation(): void
+    {
+        $this->configValues['confirmation-events'] = [
+            SnsConfirmationRequestBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:BetaTopic'],
+        ];
+
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'Type' => SnsMessage::SUBSCRIBE_TYPE,
+                'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->expectException(SnsUnknownTopicArnException::class);
+        $this->expectExceptionMessage('Unmappable TopicArn: arn:aws:sns:us-west-2:123456789012:AlphaTopic');
+
+        $this->broker->handleRequest($request);
+
+        Event::assertNotDispatched(SnsConfirmationRequestReceived::class);
+    }
+
+    public function testDispatchesDefaultNotificationEvent(): void
+    {
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'MessageId' => 'abc123',
+            ]));
+
+        $this->broker->handleRequest($request);
+        Event::assertDispatched(SnsMessageReceived::class);
+    }
+
+    public function testDispatchMappedNotificationEvent(): void
     {
         $this->configValues['message-events'] = [
             SnsMessageAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
@@ -120,7 +187,7 @@ class SnsBrokerTest extends TestCase
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
 
-    public function testDispatchFirstMappedNotificationMessage(): void
+    public function testDispatchFirstMappedNotificationEvent(): void
     {
         $this->configValues['message-events'] = [
             SnsMessageAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
@@ -141,7 +208,7 @@ class SnsBrokerTest extends TestCase
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
 
-    public function testRejectsMessageWithUnhandledTopicArn(): void
+    public function testRejectsWithUnhandledTopicArnOnMessage(): void
     {
         $this->configValues['message-events'] = [
             SnsMessageBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:BetaTopic'],
