@@ -61,6 +61,7 @@ class SnsBrokerTest extends TestCase
         $this->expectExceptionMessage('Unknown message type: Unknown');
 
         $this->broker->handleRequest($request);
+
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
 
@@ -87,6 +88,7 @@ class SnsBrokerTest extends TestCase
             ]));
 
         $this->broker->handleRequest($request);
+
         Event::assertDispatched(SnsConfirmationRequestReceived::class);
     }
 
@@ -107,6 +109,7 @@ class SnsBrokerTest extends TestCase
             ]));
 
         $this->broker->handleRequest($request);
+
         Event::assertDispatched(SnsConfirmationRequestAlphaReceived::class);
         Event::assertNotDispatched(SnsConfirmationRequestReceived::class);
     }
@@ -128,6 +131,7 @@ class SnsBrokerTest extends TestCase
             ]));
 
         $this->broker->handleRequest($request);
+
         Event::assertDispatched(SnsConfirmationRequestAlphaReceived::class);
         Event::assertNotDispatched(SnsConfirmationRequestBetaReceived::class);
         Event::assertNotDispatched(SnsConfirmationRequestReceived::class);
@@ -164,6 +168,7 @@ class SnsBrokerTest extends TestCase
             ]));
 
         $this->broker->handleRequest($request);
+
         Event::assertDispatched(SnsMessageReceived::class);
     }
 
@@ -183,6 +188,7 @@ class SnsBrokerTest extends TestCase
             ]));
 
         $this->broker->handleRequest($request);
+
         Event::assertDispatched(SnsMessageAlphaReceived::class);
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
@@ -203,6 +209,7 @@ class SnsBrokerTest extends TestCase
             ]));
 
         $this->broker->handleRequest($request);
+
         Event::assertDispatched(SnsMessageAlphaReceived::class);
         Event::assertNotDispatched(SnsMessageBetaReceived::class);
         Event::assertNotDispatched(SnsMessageReceived::class);

@@ -7,10 +7,6 @@ use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Facades\Log;
-use Nipwaayoni\SnsHandler\Events\SnsConfirmationRequestReceived;
-use Nipwaayoni\SnsHandler\Events\SnsMessageReceived;
-use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageAlphaReceived;
-use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageBetaReceived;
 
 class SnsBroker
 {
