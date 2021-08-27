@@ -1,4 +1,4 @@
-# Introduction
+# Laravel SNS Handler
 This package provides an easy way of adding AWS SNS message handling to your Laravel application as a REST endpoint. The package can automatically confirm subscription requests and dispatches events when a message is received.
 
 ## How to create an SNS topic
@@ -75,3 +75,14 @@ This package adds a route to your application for incoming SNS requests. Note th
 
 **Note: You will only be able to subscribe your endpoint if it can be reached from the AWS SNS service**
 
+## Development
+This package is expected to work with supported versions of Laravel, including LTS releases. During development, you should be sure to run tests and validate expected behaviors under different releases. Since we use the `orchestra/testbench` package, you can easily switch between installed Laravel framework releases using `composer`:
+
+```bash
+# Laravel 6
+composer require --dev orchestra/testbench:^4.0 -W
+# Laravel 8
+composer require --dev orchestra/testbench:^6.0 -W
+```
+
+New releases of Laravel should be added to the GitHub workflow matrix in `.github/workflows/run-tests.yml`.
