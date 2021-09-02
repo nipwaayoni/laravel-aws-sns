@@ -61,6 +61,10 @@ class SnsBroker
 
             case SnsMessage::SUBSCRIBE_TYPE:
                 $className = $this->getSubscriptionEvent($message->topicArn());
+                if($this->config->get('sns-handler.auto-confirm-subscriptions', true) === false){
+                    Log::info(sprintf('Subscription confirmation event not handled for topic %s with %s because auto-confirm-subscriptions disabled', $message->topicArn(), $className));
+                    return;
+                }
                 $className::dispatch($message);
                 Log::info(sprintf('Dispatched confirmation event for subscription to topic %s with %s', $message->topicArn(), $className));
                 return;

@@ -258,4 +258,21 @@ class SnsBrokerTest extends TestCase
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
 
+    public function testDoesNotAutoConfirmSubscriptionsWhenDisabled(): void
+    {
+        $this->configValues['auto-confirm-subscriptions'] = false;
+
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'Type' => SnsMessage::SUBSCRIBE_TYPE,
+                'SubscribeURL' => 'https://aws.amazon.com/subscribe/123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->broker->handleRequest($request);
+
+        Event::assertNotDispatched(SnsConfirmationRequestReceived::class);
+    }
+
 }
