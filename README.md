@@ -41,6 +41,17 @@ public function handle(SnsMessageReceived $event)
 ```
 The message content will always be a string. You are responsible for any deserialization or other steps required to interpret the message content.
 
+### Dispatching specific events for specific ARNs
+It is possible to map individual event classes to individual ARNs. The map is stored in the sns-handler.php config file (ensure this is published if it does not exist in your project). You can map either subscription events or message events in the following format:
+```php
+ 'message-events' => [
+    SnsMessageAlphaReceived::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+    SnsMessageBetaReceived::class => ['arn:aws:sns:us-west-2:123456789012:BetaTopic', 'arn:aws:sns:us-west-2:123456789012:GammaTopic'],
+    SnsMessageReceived::class => ['*'],
+ ];
+```
+Note that the map is parsed in order, so the first match found in the list will be the class dispatched.
+Note that a default event class is not required, but if a matching event cannot be found in the map, a 404 will be returned if a message is sent using that ARN.
 ## Write a feature test to test the expected SNS feature
 The ReceivesSnsMessagesTrait facilitates testing. Use the trait in your test
 
@@ -72,6 +83,11 @@ You can add your serialized message in the message field. Note that manually POS
 ## How to subscribe your endpoint in AWS
 This package adds a route to your application for incoming SNS requests. Note that because this is an api route, any API middleware you have applied in your application will affect this route. The route will be `{Your application's base URL}/api/sns/message`.
 [Follow these instructions to subscribe your endpoint using HTTPS](https://docs.aws.amazon.com/sns/latest/dg/sns-http-https-endpoint-as-subscriber.html).
+
+This package is configured to automatically respond to all SNS subscription requests sent to its endpoint. This can be disabled by adding the following to your .env file:
+```
+AUTO_CONFIRM_SUBSCRIPTIONS=false
+```
 
 **Note: You will only be able to subscribe your endpoint if it can be reached from the AWS SNS service**
 
