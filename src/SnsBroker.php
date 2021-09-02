@@ -61,7 +61,7 @@ class SnsBroker
 
             case SnsMessage::SUBSCRIBE_TYPE:
                 $className = $this->getSubscriptionEvent($message->topicArn());
-                if($this->config->get('sns-handler.auto-confirm-subscriptions', true) === false){
+                if ($this->config->get('sns-handler.auto-confirm-subscriptions', true) === false) {
                     Log::info(sprintf('Subscription confirmation event not handled for topic %s with %s because auto-confirm-subscriptions disabled', $message->topicArn(), $className));
                     return;
                 }
@@ -131,7 +131,7 @@ class SnsBroker
      */
     private function ensureDispatchable(string $className): void
     {
-        if(method_exists($className, 'dispatch')){
+        if (method_exists($className, 'dispatch')) {
             return;
         }
         throw new SnsException('Mapped class is not dispatchable:' . $className);

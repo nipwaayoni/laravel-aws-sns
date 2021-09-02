@@ -274,5 +274,4 @@ class SnsBrokerTest extends TestCase
 
         Event::assertNotDispatched(SnsConfirmationRequestReceived::class);
     }
-
 }
