@@ -15,6 +15,7 @@ use Nipwaayoni\Tests\SnsHandler\Events\SnsConfirmationRequestAlphaReceived;
 use Nipwaayoni\Tests\SnsHandler\Events\SnsConfirmationRequestBetaReceived;
 use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageAlphaReceived;
 use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageBetaReceived;
+use Nipwaayoni\Tests\SnsHandler\Events\SnsMessageNotDispatchable;
 use PHPUnit\Framework\MockObject\MockObject;
 use Nipwaayoni\Tests\SnsHandler\MakesSnsTests;
 use Nipwaayoni\Tests\SnsHandler\TestCase;
@@ -235,4 +236,26 @@ class SnsBrokerTest extends TestCase
 
         Event::assertNotDispatched(SnsMessageReceived::class);
     }
+
+    public function testThrowsExceptionForNonDispatchableMappedClass(): void
+    {
+        $this->configValues['message-events'] = [
+            SnsMessageNotDispatchable::class => ['arn:aws:sns:us-west-2:123456789012:AlphaTopic'],
+        ];
+
+        $request = $this->createMock(SnsHttpRequest::class);
+        $request->expects($this->once())->method('jsonContent')
+            ->willReturn($this->makeSnsMessageJson([
+                'MessageId' => 'abc123',
+                'TopicArn' => 'arn:aws:sns:us-west-2:123456789012:AlphaTopic'
+            ]));
+
+        $this->expectException(SnsException::class);
+        $this->expectExceptionMessage('Mapped class is not dispatchable:');
+
+        $this->broker->handleRequest($request);
+
+        Event::assertNotDispatched(SnsMessageReceived::class);
+    }
+
 }

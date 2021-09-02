@@ -73,7 +73,7 @@ class SnsBroker
     /**
      * @param string $arn
      * @return string
-     * @throws SnsUnknownTopicArnException
+     * @throws SnsUnknownTopicArnException|SnsException
      */
     private function getSubscriptionEvent(string $arn): string
     {
@@ -84,7 +84,7 @@ class SnsBroker
     /**
      * @param string $arn
      * @return string
-     * @throws SnsUnknownTopicArnException
+     * @throws SnsUnknownTopicArnException|SnsException
      */
     private function getNotificationEvent(string $arn): string
     {
@@ -96,7 +96,7 @@ class SnsBroker
      * @param string $arn
      * @param array $map
      * @return string
-     * @throws SnsUnknownTopicArnException
+     * @throws SnsUnknownTopicArnException|SnsException
      */
     private function arnMap(string $arn, array $map): string
     {
@@ -106,6 +106,7 @@ class SnsBroker
                 $default = $className;
             }
             if (in_array($arn, $arnList)) {
+                $this->ensureDispatchable($className);
                 return $className;
             }
         }
@@ -115,7 +116,20 @@ class SnsBroker
         }
 
         // TODO ensure class is dispatchable
+        $this->ensureDispatchable($default);
 
         return $default;
+    }
+
+    /**
+     * @param string $className
+     * @throws SnsException
+     */
+    private function ensureDispatchable(string $className): void
+    {
+        if(method_exists($className, 'dispatch')){
+            return;
+        }
+        throw new SnsException('Mapped class is not dispatchable:' . $className);
     }
 }
