@@ -62,7 +62,7 @@
      "repositories": [
         {
             "type": "vcs",
-            "url":  "git@github.com:nipwaayoni/aws-php-sns-message-validator.git",
+            "url":  "git@github.com:nipwaayoni/aws-php-sns-message-validator.git"
         }
     ]
 }
