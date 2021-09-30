@@ -16,7 +16,7 @@
     "require": {
         "php": ">=7.3",
       	"ext-json": "*",
-        "aws/aws-php-sns-message-validator": "^1.6",
+        "aws/aws-php-sns-message-validator": "dev-php_81_support",
         "php-http/discovery": "^1.14",
         "psr/http-factory": "^1.0",
         "psr/http-client": "^1.0"
@@ -58,5 +58,11 @@
         "phpstan": [
             "tools/phpstan analyze"
         ]
-    }
+    },
+     "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:nipwaayoni/aws-php-sns-message-validator.git",
+        }
+    ]
 }
