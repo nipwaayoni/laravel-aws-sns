@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Http\Adapter\Guzzle7\Client;
 use Http\Client\HttpClient;
 
 trait SnsHttpTestHelperTrait
@@ -29,7 +30,7 @@ trait SnsHttpTestHelperTrait
         $handlerStack->push($history);
 
         $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
-        $this->client = new \Http\Adapter\Guzzle6\Client($client);
+        $this->client = new Client($client);
     }
 
     public function httpAssertSent(callable $function): void
